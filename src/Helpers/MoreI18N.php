@@ -1,7 +1,7 @@
 <?php
 
 /*
- * webtrees - custom module
+ * bschwede/wt-shared-libs: Library to share common code between webtrees custom modules
  *
  * Copyright (C) 2026 Bernd Schwendinger
  *

@@ -1,6 +1,8 @@
 <?php
 
 /**
+ * bschwede/wt-shared-libs: Library to share common code between webtrees custom modules
+ * 
  * webtrees: online genealogy
  * Copyright (C) 2026 webtrees development team
  *                    <http://webtrees.net>
