@@ -39,138 +39,53 @@ use Fisharebest\Webtrees\Webtrees;
  */
 class ClassName
 {
-    public const ACCOUNT_DELETE      = 'AccountDelete';
-    public const ACCOUNT_EDIT        = 'AccountEdit';
-    public const DATA_FIX_PAGE       = 'DataFixPage';
     public const CONTROL_PANEL       = 'ControlPanel';
-    public const COPY_FACT           = 'CopyFact';
-    public const DELETE_FACT         = 'DeleteFact';
-    public const EDIT_FACT           = 'EditFact';
-    public const FAMILY_PAGE         = 'FamilyPage';
     public const HOME_PAGE           = 'HomePage';
-    public const INDIVIDUAL_PAGE     = 'IndividualPage';
-    public const LOGIN_ACTION        = 'LoginAction';
-    public const LOGIN_PAGE          = 'LoginPage';
     public const LOGOUT_PAGE         = 'LogoutPage';
-    public const MEDIA_PAGE          = 'MediaPage';
-    public const NOTE_PAGE           = 'NotePage';
-    public const PASSWORD_REQUEST    = 'PasswordRequest';
-    public const PASSWORD_RESET      = 'PasswordReset';
-    public const PENDING_CHANGES     = 'PendingChanges';
-    public const REGISTER            = 'RegisterPage';
-    public const REPOSITORY_PAGE     = 'RepositoryPage';
-    public const SOURCE_PAGE         = 'SourcePage';
-    public const SUBMITTER_PAGE      = 'SubmitterPage';
-    public const UPGRADE_WIZARD_PAGE = 'UpgradeWizardPage';
+    public const EDIT_NOTE_ACTION    = 'EditNoteAction';
+    public const HELP_TEXT           = 'HelpText';
+    public const SELECT_LANGUAGE     = 'SelectLanguage';
+    public const TREE_PAGE           = 'TreePage';
+    public const TREE_PAGE_BLOCK_EDIT = 'TreePageBlockEdit';
+    public const USER_PAGE_BLOCK_EDIT = 'UserPageBlockEdit';
 
-
-/*
-linkenhancer
-use Fisharebest\Webtrees\Http\RequestHandlers\TreePageBlockEdit;
-use Fisharebest\Webtrees\Http\RequestHandlers\UserPageBlockEdit;
-use Fisharebest\Webtrees\Http\RequestHandlers\HomePage;
-use Fisharebest\Webtrees\Http\RequestHandlers\TreePage;
-use Fisharebest\Webtrees\Http\RequestHandlers\Logout;
-use Fisharebest\Webtrees\Http\RequestHandlers\SelectLanguage;
-use Fisharebest\Webtrees\Http\RequestHandlers\HelpText;
-
-cronjob
-RouteEventService::fallbackMap als key (String)
-Fisharebest\Webtrees\Http\RequestHandlers\EditNoteAction
-*/
 
     private const CLASS_NAMES = [
-        self::ACCOUNT_DELETE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\AccountDelete::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Account::class,
-        ],
-        self::ACCOUNT_EDIT => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\AccountEdit::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Account::class,
-        ],
         self::CONTROL_PANEL => [
             '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\ControlPanel::class,
             '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\ControlPanel::class,
-        ],
-        self::COPY_FACT => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\CopyFact::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\CopyFact::class,
-        ],
-        self::DATA_FIX_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\DataFixPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\DataFixPage::class,
-        ],
-        self::DELETE_FACT => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\DeleteFact::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\DeleteFact::class,
-        ],
-        self::EDIT_FACT => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\EditFactPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\EditFact::class,
-        ],
-        self::FAMILY_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\FamilyPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\FamilyPage::class,
         ],
         self::HOME_PAGE => [
             '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\HomePage::class,
             '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\HomePage::class,
         ],
-        self::INDIVIDUAL_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\IndividualPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\IndividualPage::class,
-        ],
-        self::LOGIN_ACTION => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\LoginAction::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Login::class,
-        ],
-        self::LOGIN_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\LoginPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Login::class,
-        ],
         self::LOGOUT_PAGE => [
             '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\Logout::class,
             '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Logout::class,
         ],
-        self::MEDIA_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\MediaPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\MediaPage::class,
+        self::EDIT_NOTE_ACTION => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\EditNoteAction::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\EditNote::class,
         ],
-        self::NOTE_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\NotePage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\NotePage::class,
+        self::HELP_TEXT => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\HelpText::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\HelpText::class,
         ],
-        self::PASSWORD_REQUEST => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\PasswordRequestPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\PasswordRequest::class,
+        self::SELECT_LANGUAGE => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\SelectLanguage::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\SelectLanguage::class,
         ],
-        self::PASSWORD_RESET => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\PasswordResetPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\PasswordReset::class,
+        self::TREE_PAGE => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\TreePage::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\TreePage::class,
         ],
-        self::PENDING_CHANGES => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\PendingChanges::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\PendingChanges::class,
+        self::TREE_PAGE_BLOCK_EDIT => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\TreePageBlockEdit::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\TreePageBlockEdit::class,
         ],
-        self::REPOSITORY_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\RepositoryPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\RepositoryPage::class,
-        ],
-        self::REGISTER => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\RegisterPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\Register::class,
-        ],
-        self::SOURCE_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\SourcePage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\SourcePage::class,
-        ],
-        self::SUBMITTER_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\SubmitterPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\SubmitterPage::class,
-        ],
-        self::UPGRADE_WIZARD_PAGE => [
-            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\UpgradeWizardPage::class,
-            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\UpgradeWizardPage::class,
+        self::USER_PAGE_BLOCK_EDIT => [
+            '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\UserPageBlockEdit::class,
+            '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\UserPageBlockEdit::class,
         ],
     ];
 
