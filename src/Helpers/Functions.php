@@ -36,13 +36,16 @@ use Fisharebest\Webtrees\Auth;
 use Fisharebest\Webtrees\Enums\AccessLevel;
 use Fisharebest\Webtrees\Fact;
 use Fisharebest\Webtrees\GedcomRecord;
+use Fisharebest\Webtrees\Module\AbstractModule;
 use Fisharebest\Webtrees\Registry;
+use Fisharebest\Webtrees\Schema\MigrationInterface;
 use Fisharebest\Webtrees\Webtrees;
 use Fisharebest\Webtrees\User;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
 
 use Exception;
+use PDOException;
 
 
 /**
@@ -164,5 +167,63 @@ class Functions
             ->extras(['middleware' => $middleware]);
             return;
         }
+    }
+
+    /**
+     * Apply a module's Migration# class files (zero based) until
+     * target_version - 1.
+     *
+     * Same approach as webtrees' Database::getSchema(), but using the module's
+     * own preferences instead of the site settings. DDL runs outside the request
+     * transaction (MySQL implicit commits), which is re-opened in the finally
+     * block so webtrees' middleware can still commit.
+     *
+     * @param AbstractModule $module
+     * @param string         $namespace      namespace of the Migration classes
+     * @param string         $schema_name    preference name holding the current schema version
+     * @param int            $target_version
+     *
+     * @return bool true if any update was applied
+     */
+    public static function updateSchema(AbstractModule $module, string $namespace, string $schema_name, int $target_version): bool
+    {
+        try {
+            $current_version = intval($module->getPreference($schema_name));
+        } catch (PDOException $ex) {
+            // During initial installation the site tables won't exist yet.
+            $current_version = 0;
+        }
+
+        $updates_applied = false;
+
+        $connection = DB::schema()->getConnection();
+
+        if ($connection->transactionLevel() > 0) {
+            $connection->commit();
+        }
+
+        try {
+            // Update the schema, one version at a time.
+            while ($current_version < $target_version) {
+                $class = $namespace . '\\Migration' . $current_version;
+                /** @var MigrationInterface $migration */
+                $migration = new $class();
+                $migration->upgrade();
+                $current_version++;
+
+                // The module row may not exist yet on first install (e.g. called
+                // from setName()), so only persist the version once it does.
+                if (DB::table('module')->where('module_name', '=', $module->name())->exists()) {
+                    $module->setPreference($schema_name, (string) $current_version);
+                }
+                $updates_applied = true;
+            }
+        } finally {
+            // Re-open a transaction for webtrees' middleware to commit, even if
+            // the DDL above failed.
+            $connection->beginTransaction();
+        }
+
+        return $updates_applied;
     }
 }
