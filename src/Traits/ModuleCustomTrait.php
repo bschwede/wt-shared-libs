@@ -148,9 +148,10 @@ trait ModuleCustomTrait
     public function resourcesFolder(): string
     {
         // __DIR__ inside a trait resolves to the trait file, not the consuming
-        // class → resolve the path from the consuming class' file instead.
+        // class. The consuming module class lives at <modul>/src/<X>Module.php,
+        // so its resources/ dir (<modul>/resources/) is two levels up.
         $classFile = (new \ReflectionClass($this))->getFileName();
-        return dirname($classFile, 1) . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
+        return dirname($classFile, 2) . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
     }
 
     /**
