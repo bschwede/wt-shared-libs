@@ -36,7 +36,7 @@ use LogicException;
  * Trait ModuleCustomTrait - certain default implementations of ModuleCustomInterface
  * 
  * Consuming classes must define the following constants:
- * CUSTOM_AUTHOR, CUSTOM_VERSION, GITHUB_REPO
+ * CUSTOM_AUTHOR, CUSTOM_VERSION, CUSTOM_LAST, CUSTOM_WEBSITE
  *
  */
 trait ModuleCustomTrait 
@@ -147,7 +147,10 @@ trait ModuleCustomTrait
      */
     public function resourcesFolder(): string
     {
-        return dirname(__DIR__, 1) . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
+        // __DIR__ inside a trait resolves to the trait file, not the consuming
+        // class → resolve the path from the consuming class' file instead.
+        $classFile = (new \ReflectionClass($this))->getFileName();
+        return dirname($classFile, 1) . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR;
     }
 
     /**

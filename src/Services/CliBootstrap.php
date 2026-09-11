@@ -51,8 +51,34 @@ use function parse_ini_file;
  */
 final class CliBootstrap {
 
-    /** webtrees root: src/Services is four levels below it */
-    public const WEBTREES_ROOT = __DIR__ . '/../../../../';
+    private static ?string $root = null;
+
+    /**
+     * webtrees root, resolved dynamically.
+     *
+     * A const like __DIR__ . '/…/…' breaks under Option Y, where this copy
+     * lives in modules_v4/<modul>/vendor/bschwede/wt-shared-libs/src/Services/
+     * (six levels below the root) instead of modules_v4/<lib>/src/Services/
+     * (four). Walk up to the nearest index.php (the webtrees root) instead.
+     */
+    public static function webtreesRoot(): string
+    {
+        if (self::$root !== null) {
+            return self::$root;
+        }
+        $dir = __DIR__;
+        for ($i = 0; $i < 14; $i++) {
+            if (is_file($dir . '/index.php')) {
+                return self::$root = $dir . '/';
+            }
+            $parent = dirname($dir);
+            if ($parent === $dir) {
+                break;
+            }
+            $dir = $parent;
+        }
+        throw new \RuntimeException('webtrees-Root (index.php) nicht gefunden über ' . __DIR__);
+    }
 
     /**
      * Aborts when the script is not running from the command line.
@@ -72,7 +98,7 @@ final class CliBootstrap {
      */
     public static function autoload(): void
     {
-        require_once self::WEBTREES_ROOT . '/vendor/autoload.php';
+        require_once self::webtreesRoot() . 'vendor/autoload.php';
     }
 
     /**

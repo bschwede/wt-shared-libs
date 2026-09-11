@@ -49,7 +49,7 @@ $local_common_library_version = $local_composer_versions['versions'][$libname]['
 //This ensures that always the latest library version is autoloaded
 if (version_compare($local_common_library_version, $autoload_common_library_version, '>')) {
     $ns_prefix = 'Schwendinger\\Webtrees\\';
-    foreach (['Helpers'] as $path) {
+    foreach (['Helpers', 'Services', 'Traits'] as $path) {
         $loader->addPsr4($ns_prefix . $path . '\\', __DIR__ . '/src/' . $path);
     }
     $loader->register(true);
