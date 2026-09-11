@@ -114,6 +114,14 @@ final class CliBootstrap {
         return is_file($file) || is_link($file) || is_dir($file);
     }
 
+    public static function exitOnSiteOffline(int $status = 0): void
+    {
+        if (self::siteIsOffline()) {
+            fwrite(STDOUT, 'site offline (data/offline.txt) - skipped' . PHP_EOL);
+            exit($status);
+        }
+    }
+
     /**
      * Reproduces the core CLI initialization (see app/Webtrees.php:243-260
      * and app/Cli/Console.php:64-89):
