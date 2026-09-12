@@ -50,6 +50,7 @@ class ClassName
     public const TREE_PAGE           = 'TreePage';
     public const TREE_PAGE_BLOCK_EDIT = 'TreePageBlockEdit';
     public const USER_PAGE_BLOCK_EDIT = 'UserPageBlockEdit';
+    public const EXCEPTION_HTTP_FORBIDDEN = 'HttpForbiddenException';
 
 
     private const CLASS_NAMES = [
@@ -89,6 +90,10 @@ class ClassName
             '2.1' =>  \Fisharebest\Webtrees\Http\RequestHandlers\UserPageBlockEdit::class,
             '2.3' =>  \Fisharebest\Webtrees\Http\Controllers\UserPageBlockEdit::class,
         ],
+        self::EXCEPTION_HTTP_FORBIDDEN => [
+            '2.1' => \Fisharebest\Webtrees\Http\Exceptions\HttpAccessDeniedException::class,
+            '2.3' => \Fisharebest\Webtrees\Http\Exceptions\HttpForbiddenException::class,
+        ],        
     ];
 
     /**
@@ -106,4 +111,11 @@ class ClassName
             return self::CLASS_NAMES[$name]['2.1'] ?? '';
         }
     }
+
+    public static function isInstanceOf(object $instance, string $name): bool
+    {
+        $class = self::get($name);
+        return ($class !== '' && class_exists($class) && $instance instanceof $class);
+    }
+
 }
