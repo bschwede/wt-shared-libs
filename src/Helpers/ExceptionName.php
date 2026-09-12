@@ -54,15 +54,14 @@ class ExceptionName
      *
      * @return string
      */
-    public static function get(string $name) : string {
+    public static function get(string $name, string $fallback = "\\Exception") : string {
 
         if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
-            return self::CLASS_NAMES[$name]['2.3'] ?? '';
+            return self::CLASS_NAMES[$name]['2.3'] ?? $fallback;
         } else {
-            return self::CLASS_NAMES[$name]['2.1'] ?? '';
+            return self::CLASS_NAMES[$name]['2.1'] ?? $fallback;
         }
     }
-
 
     public static function isInstanceOf(\Throwable $exception, string $name): bool
     {
