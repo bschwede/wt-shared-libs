@@ -144,31 +144,78 @@ class Functions
     }
 
     /**
-     * Register a route
+     * Register a route.
      *
-     * @param string $path
-     * @param string $name
-     * @param        $handler
-     * @param array  $middleware
+     * $name MUST be the handler FQCN: it becomes the route name (2.2.6) / controller
+     * (2.3), which route() URL generation and dispatch rely on. $path is the full path.
+     *
+     * @param string             $path
+     * @param string             $name       handler FQCN (route name)
+     * @param string|object|null $handler    2.2.6 only (Aura route handler)
+     * @param list<class-string> $middleware
+     * @param bool               $allow_post 2.2.6 only; 2.3 routes have no per-route methods
      *
      * @return void
      */
-    public static function registerRoute(string $path, string $name, $handler = null, array $middleware = []): void {
-
+    public static function registerRoute(string $path, string $name, $handler = null, array $middleware = [], bool $allow_post = false): void
+    {
         $router = Registry::routeFactory()->routeMap();
 
         if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
-
+            // 2.3: RouteCollection::add($url, $controller, $middleware) — name = $name
             $router->add($path, $name, $middleware);
+
             return;
         }
-        else {
-            $router
-            ->get($name, $path, $handler)
-            ->allows(RequestMethodInterface::METHOD_POST)
-            ->extras(['middleware' => $middleware]);
-            return;
+
+        // 2.2.6: Aura\Router\Map
+        $route = $router->get($name, $path, $handler);
+
+        if ($allow_post) {
+            $route->allows(RequestMethodInterface::METHOD_POST);
         }
+
+        $route->extras(['middleware' => $middleware]);
+    }
+
+    /**
+     * Normalize a route object to a version-independent array.
+     *
+     * @param object $route 2.2.6 Aura\Router\Route or 2.3 \Fisharebest\Webtrees\Http\Routing\Route
+     *
+     * @return array{path: string, handler: string, method: string, extras: string, attr: array}
+     */
+    public static function describeRoute(object $route): array
+    {
+        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+            return [
+                'path'    => $route->url,
+                'handler' => $route->controller,
+                'method'  => '',
+                'extras'  => implode('|', (array) $route->middleware),
+                'attr'    => [],
+            ];
+        }
+
+        return [
+            'path'    => $route->path,
+            'handler' => $route->name,
+            'method'  => implode('|', (array) $route->allows),
+            'extras'  => is_array($route->extras) && isset($route->extras['middleware']) ? implode('|', $route->extras['middleware']) : '',
+            'attr'    => (array) $route->attributes,
+        ];
+    }
+
+    /**
+     * All registered routes (version-independent accessor).
+     *
+     * @return object[]
+     */
+    public static function allRoutes(): array
+    {
+        $router = Registry::routeFactory()->routeMap();
+
+        return version_compare(Webtrees::VERSION, '2.3', '>=') ? $router->all() : $router->getRoutes();
     }
 
     /**
