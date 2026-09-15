@@ -45,6 +45,7 @@ use Fisharebest\Webtrees\Webtrees;
 use Fisharebest\Webtrees\User;
 use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
+use Psr\Http\Message\ServerRequestInterface;
 
 use Exception;
 use PDOException;
@@ -55,6 +56,17 @@ use PDOException;
  */
 class Functions
 {
+
+    /**
+     * Stem aliases for genuine 2.2.6→2.3 stem renamings (re-merges) that the
+     * suffix stripper does not resolve. Keys/values are stems (after namespace and suffix stripping).
+     * Idempotent. GET-relevant cases: default-blocks, data-fix, my-account.
+     */
+    private const array HANDLER_KEY_ALIASES = [
+        'TreePageDefaultEdit' => 'TreePageDefault',
+        'DataFixChoose'       => 'DataFix',
+        'AccountEdit'         => 'Account',
+    ];
 
     /**
      * All users
@@ -207,6 +219,41 @@ class Functions
     }
 
     /**
+     * Version-neutral, canonical form of a route handler (for `route_help_map.handler_key`).
+     *  - Core HTTP FQCN (2.2.6 RequestHandlers\ / 2.3 Controllers\):
+     *      Remove namespace + suffix (Page|Action|Modal) + apply alias map;
+     *      ModuleAction remains 1:1 (version-stable, name unchanged).
+     *  - Everything else (module FQCN, module/point names, custom FQCN): unchanged.
+     *
+     * @return string
+     */
+    public static function canonicalHandlerKey(string $handler): string
+    {
+        $h = trim($handler);
+        if ($h !== ''
+            && (str_starts_with($h, 'Fisharebest\Webtrees\Http\RequestHandlers\\')
+                || str_starts_with($h, 'Fisharebest\Webtrees\Http\Controllers\\'))) {
+            $parts = explode('\\', $h);
+            $base = (string) $parts[count($parts) - 1];
+
+            // ModuleAction is version-stable (remains in RequestHandlers) -> 1:1, no suffix stripping.
+            if ($base === 'ModuleAction') {
+                return $h;
+            }
+
+            foreach (['Page', 'Action', 'Modal'] as $sfx) {
+                if (str_ends_with($base, $sfx) && strlen($base) > strlen($sfx)) {
+                    $base = substr($base, 0, -strlen($sfx));
+                }
+            }
+
+            return self::HANDLER_KEY_ALIASES[$base] ?? $base;
+        }
+
+        return $h;
+    }
+
+    /**
      * All registered routes (version-independent accessor).
      *
      * @return object[]
@@ -216,6 +263,57 @@ class Functions
         $router = Registry::routeFactory()->routeMap();
 
         return version_compare(Webtrees::VERSION, '2.3', '>=') ? $router->all() : $router->getRoutes();
+    }
+
+    /**
+     * The matched route parameters as a flat map of JSON-encodable scalars
+     * (objects such as the Tree object are omitted).
+     *
+     *  - 2.2.6 (Aura): the scalars of the route's `attributes`.
+     *  - 2.3:          the scalars read from the request for every token in the
+     *                  route URL (the Router middleware puts them there).
+     *
+     * The token regex also matches optional segments `{/x}` (e.g. `{/fact_id}`).
+     *
+     * @param object $route 2.2.6 Aura\Router\Route or 2.3 \Fisharebest\Webtrees\Http\Routing\Route
+     *
+     * @return array<string, string|int|float|bool>
+     */
+    public static function routeParams(object $route, ServerRequestInterface $request): array
+    {
+        $attrs = version_compare(Webtrees::VERSION, '2.3', '>=')
+            ? self::routeParams23($route, $request)
+            : (array) ($route->attributes ?? []);
+
+        $out = [];
+        foreach ($attrs as $key => $value) {
+            if (is_string($value) || is_int($value) || is_float($value) || is_bool($value)) {
+                $out[(string) $key] = $value;
+            }
+        }
+
+        return $out;
+    }
+
+    /**
+     * 2.3 only: matched route tokens sourced from the request (set by the
+     * Router middleware), objects such as the Tree object omitted.
+     *
+     * @return array<string, mixed>
+     */
+    private static function routeParams23(object $route, ServerRequestInterface $request): array
+    {
+        $attrs = [];
+        if (preg_match_all('/\{\/?([a-zA-Z_]\w*)\}/', (string) $route->url, $m)) {
+            foreach ($m[1] as $token) {
+                $value = $request->getAttribute($token);
+                if ($value !== null && !is_object($value)) {
+                    $attrs[$token] = $value;
+                }
+            }
+        }
+
+        return $attrs;
     }
 
     /**
