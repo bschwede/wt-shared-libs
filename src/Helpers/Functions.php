@@ -69,6 +69,30 @@ class Functions
     ];
 
     /**
+     * Is the running webtrees version >= the given minimum version?
+     * Webtrees::VERSION is a compile-time constant, so the result is stable
+     * for the process; the check is also trivially cheap.
+     *
+     * @param string $minVersion e.g. '2.3' or '2.2.5'
+     *
+     * @return bool
+     */
+    public static function webtreesAtLeast(string $minVersion): bool
+    {
+        return version_compare(Webtrees::VERSION, $minVersion, '>=');
+    }
+
+    /**
+     * webtrees >= 2.3 (the 2.2.6/2.3 code-split gate).
+     *
+     * @return bool
+     */
+    public static function wtIsAtLeast2_3(): bool
+    {
+        return self::webtreesAtLeast('2.3');
+    }
+
+    /**
      * All users
      *
      * @return Collection<array-key,User>
@@ -120,7 +144,7 @@ class Functions
      */
     public static function getPrivatizedGedcom(GedcomRecord $record, int $access_level) : string {
 
-        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+        if (self::wtIsAtLeast2_3()) {
             return $record->privatizeGedcom(AccessLevel::from($access_level));
         }
         else {
@@ -147,7 +171,7 @@ class Functions
         bool $ignore_deleted = false
     ): Collection {
 
-        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+        if (self::wtIsAtLeast2_3()) {
             return $record->facts($filter, $sort, AccessLevel::from($access_level), $ignore_deleted);
         }
         else {
@@ -173,7 +197,7 @@ class Functions
     {
         $router = Registry::routeFactory()->routeMap();
 
-        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+        if (self::wtIsAtLeast2_3()) {
             // 2.3: RouteCollection::add($url, $controller, $middleware) — name = $name
             $router->add($path, $name, $middleware);
 
@@ -199,7 +223,7 @@ class Functions
      */
     public static function describeRoute(object $route): array
     {
-        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+        if (self::wtIsAtLeast2_3()) {
             return [
                 'path'    => $route->url,
                 'handler' => $route->controller,
@@ -262,7 +286,7 @@ class Functions
     {
         $router = Registry::routeFactory()->routeMap();
 
-        return version_compare(Webtrees::VERSION, '2.3', '>=') ? $router->all() : $router->getRoutes();
+        return self::wtIsAtLeast2_3() ? $router->all() : $router->getRoutes();
     }
 
     /**
@@ -281,7 +305,7 @@ class Functions
      */
     public static function routeParams(object $route, ServerRequestInterface $request): array
     {
-        $attrs = version_compare(Webtrees::VERSION, '2.3', '>=')
+        $attrs = self::wtIsAtLeast2_3()
             ? self::routeParams23($route, $request)
             : (array) ($route->attributes ?? []);
 

@@ -105,7 +105,7 @@ class ClassName
      */
     public static function get(string $name) : string {
 
-        if (version_compare(Webtrees::VERSION, '2.3', '>=')) {
+        if (Functions::wtIsAtLeast2_3()) {
             return self::CLASS_NAMES[$name]['2.3'] ?? '';
         } else {
             return self::CLASS_NAMES[$name]['2.1'] ?? '';
