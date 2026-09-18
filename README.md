@@ -1,4 +1,4 @@
-# webtrees shared libs for cutom modules
+# webtrees shared libs for custom modules
 
 [Description](#description) | [Requirements](#requirements) | [Installation](#installation) | [License](#license)
 
@@ -19,19 +19,19 @@
 ## Description
 This package bundles shared classes and code. It is intended for use in bschwede's webtrees custom modules.
 
-Parts and especially the loading routine are inspired by the similar module [Jefferson49/webtrees-common](https://github.com/Jefferson49/webtrees-common)
+Parts and especially the loading routine are inspired by the similar package [Jefferson49/webtrees-common](https://github.com/Jefferson49/webtrees-common)
 
 
 <a name="requirements"></a>
 ## Requirements
 
-This module requires **webtrees** version 2.2/2.3.
-This module has the same requirements as [webtrees#system-requirements](https://github.com/fisharebest/webtrees#system-requirements).
+This package requires **webtrees** version 2.2/2.3.
+This package has the same requirements as [webtrees#system-requirements](https://github.com/fisharebest/webtrees#system-requirements).
 
 
 <a name="installation"></a>
 ## Installation
-The consuming module simply needs to include a `require_once` for the `autoload.php` file contained here in its own loader routine. It's `composer.json` should include the following content:
+The consuming module simply needs to include a `require_once` for the `autoload.php` file contained here in its own loader routine (after loading other composer libraries). It's `composer.json` should include the following content:
 
 ```json
     "repositories": [
@@ -39,9 +39,13 @@ The consuming module simply needs to include a `require_once` for the `autoload.
     ],
     "require": {
         "bschwede/wt-shared-libs": "^1.0"
-    }
+    },
+    "config": {
+        "prepend-autoloader": false
+    }    
 ```
 
+Caution: Do not use the shared library within __construct() of the main module class, because it might result in wrong autoload behavior.
 
 <a name="license"></a>
 ## License
