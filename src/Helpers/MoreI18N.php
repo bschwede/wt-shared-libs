@@ -26,7 +26,12 @@ declare(strict_types=1);
 
 namespace Schwendinger\Webtrees\Helpers;
 
+use DateTimeImmutable;
+use DateTimeZone;
+use Fisharebest\Webtrees\Auth;
+use Fisharebest\Webtrees\Contracts\UserInterface;
 use Fisharebest\Webtrees\I18N;
+use Throwable;
 
 /**
  * Wrapper class for Fisharebest\Webtrees\I18N and special i18n cases
@@ -34,6 +39,26 @@ use Fisharebest\Webtrees\I18N;
  * - translate does not translate the msgid, it is meant to be an extraction marker for xgettext
  */
 final class MoreI18N {
+
+    /**
+     * Get localized datetime stamp from database timestamp string for given timezone
+     * @param string $db_timestamp  format Y-m-d H:i:s
+     * @param string|null $timezone default: current user's preference or fallback to UTC
+     * @return string
+     */
+    public static function localizedDatetimeString(string $db_timestamp, string|null $timezone = null): string {
+        $timestamp = $db_timestamp;
+        try {
+            $timezone = $timezone ?? Auth::user()->getPreference(UserInterface::PREF_TIME_ZONE, 'UTC');
+            $timestamp = DateTimeImmutable::createFromFormat('Y-m-d H:i:s', $db_timestamp, new DateTimeZone('UTC'))
+            ->setTimezone(new DateTimeZone($timezone))
+            ->format(strtr(I18N::dateFormat(), ['%' => '']) . ' ' . strtr(I18N::timeFormat(), ['%' => '']));
+        }
+        catch (Throwable $e) {}
+    
+        return $timestamp;
+    }
+
 
     /**
      * Extraction marker for xgettext (keyword "translate").
