@@ -198,8 +198,9 @@ class Functions
         $router = Registry::routeFactory()->routeMap();
 
         if (self::wtIsAtLeast2_3()) {
-            // 2.3: RouteCollection::add($url, $controller, $middleware) — name = $name
-            $router->add($path, $name, $middleware);
+            // 2.3: RouteCollection::add($url, $controller, $middleware)
+            $controller = $handler ?? $name; // different routes with the same handler class - name is not the class name
+            $router->add($path, $controller, $middleware);
 
             return;
         }
