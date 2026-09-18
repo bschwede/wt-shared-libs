@@ -370,7 +370,10 @@ class Functions
         $connection = DB::schema()->getConnection();
 
         if ($connection->transactionLevel() > 0) {
-            $connection->commit();
+            try {
+                $connection->commit();
+            } catch (PDOException $ex) { // suppress "PDOException: There is no active transaction" caused by other module updates
+            }
         }
 
         try {
