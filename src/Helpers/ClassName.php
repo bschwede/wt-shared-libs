@@ -93,7 +93,11 @@ class ClassName
         self::EXCEPTION_HTTP_FORBIDDEN => [
             '2.1' => \Fisharebest\Webtrees\Http\Exceptions\HttpAccessDeniedException::class,
             '2.3' => \Fisharebest\Webtrees\Http\Exceptions\HttpForbiddenException::class,
-        ],        
+        ],
+        self::MODULES_LISTS => [
+            '2.1' => \Fisharebest\Webtrees\Http\RequestHandlers\ModulesListsPage::class,
+            '2.3' => \Fisharebest\Webtrees\Http\Controllers\ModulesLists::class,
+        ],                
     ];
 
     /**
