@@ -51,6 +51,8 @@ class ClassName
     public const TREE_PAGE_BLOCK_EDIT = 'TreePageBlockEdit';
     public const USER_PAGE_BLOCK_EDIT = 'UserPageBlockEdit';
     public const EXCEPTION_HTTP_FORBIDDEN = 'HttpForbiddenException';
+    public const MODULES_LISTS           = 'ModulesLists';
+    
 
 
     private const CLASS_NAMES = [
