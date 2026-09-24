@@ -52,6 +52,7 @@ class ClassName
     public const USER_PAGE_BLOCK_EDIT = 'UserPageBlockEdit';
     public const EXCEPTION_HTTP_FORBIDDEN = 'HttpForbiddenException';
     public const MODULES_LISTS           = 'ModulesLists';
+    public const MODULES_TABS            = 'ModulesTabs';
     
 
 
@@ -99,7 +100,11 @@ class ClassName
         self::MODULES_LISTS => [
             '2.1' => \Fisharebest\Webtrees\Http\RequestHandlers\ModulesListsPage::class,
             '2.3' => \Fisharebest\Webtrees\Http\Controllers\ModulesLists::class,
-        ],                
+        ],
+        self::MODULES_TABS => [
+            '2.1' => \Fisharebest\Webtrees\Http\RequestHandlers\ModulesTabsPage::class,
+            '2.3' => \Fisharebest\Webtrees\Http\Controllers\ModulesTabs::class,
+        ],
     ];
 
     /**
