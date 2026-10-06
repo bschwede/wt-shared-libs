@@ -47,6 +47,9 @@ use Illuminate\Database\Capsule\Manager as DB;
 use Illuminate\Support\Collection;
 use Psr\Http\Message\ServerRequestInterface;
 
+use Fisharebest\Webtrees\Enums\HttpStatusCode; //wt2.3
+use Fig\Http\Message\StatusCodeInterface;
+
 use Exception;
 use PDOException;
 
@@ -400,5 +403,18 @@ class Functions
         }
 
         return $updates_applied;
+    }
+
+    /**
+     * Get HTTP Statuscode for webtrees response function - wt2.3 uses enum
+     * @param int $code   HTTP code
+     * @return int|HttpStatusCode
+     */
+    public static function httpStatusCode(int $code) : int|HttpStatusCode {
+        if (self::wtIsAtLeast2_3()) {
+            return HttpStatusCode::from($code);
+        } else {
+            return $code;
+        }
     }
 }
