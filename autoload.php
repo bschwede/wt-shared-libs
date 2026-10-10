@@ -38,7 +38,7 @@ $loader = new Composer\Autoload\ClassLoader($dir);
 try {
     $autoload_common_library_version = Composer\InstalledVersions::getVersion($libname);
 }
-catch (\OutOfBoundsException $e) {
+catch (Throwable $e) {
     $autoload_common_library_version = '';
 }
 
