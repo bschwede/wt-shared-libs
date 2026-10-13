@@ -105,6 +105,14 @@ class ClassName
             '2.1' => \Fisharebest\Webtrees\Http\RequestHandlers\ModulesTabsPage::class,
             '2.3' => \Fisharebest\Webtrees\Http\Controllers\ModulesTabs::class,
         ],
+        self::MODULE => [
+            '2.1' => 'module',
+            '2.3' => \Fisharebest\Webtrees\Http\RequestHandlers\ModuleAction::class,
+        ],
+        self::MODULE_TREE => [
+            '2.1' => 'module-tree',
+            '2.3' => \Fisharebest\Webtrees\Http\RequestHandlers\ModuleAction::class,
+        ],
     ];
 
     /**
