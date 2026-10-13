@@ -53,8 +53,9 @@ class ClassName
     public const EXCEPTION_HTTP_FORBIDDEN = 'HttpForbiddenException';
     public const MODULES_LISTS           = 'ModulesLists';
     public const MODULES_TABS            = 'ModulesTabs';
+    public const MODULE                  = "ModuleAction";
+    public const MODULE_TREE             = "ModuleAction";
     
-
 
     private const CLASS_NAMES = [
         self::CONTROL_PANEL => [
