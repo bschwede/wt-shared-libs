@@ -54,7 +54,7 @@ class ClassName
     public const MODULES_LISTS           = 'ModulesLists';
     public const MODULES_TABS            = 'ModulesTabs';
     public const MODULE                  = "ModuleAction";
-    public const MODULE_TREE             = "ModuleAction";
+    public const MODULE_TREE             = "ModuleAction_Tree";
     
 
     private const CLASS_NAMES = [
