@@ -141,7 +141,11 @@ final class CliBootstrap {
         self::autoload();
 
         Webtrees::new()->bootstrap();
-        I18N::init(code: 'en-US', setup: true);
+        if (Functions::wtIsAtLeast2_3()) {
+            I18N::init('en-US');
+        } else {
+            I18N::init(code: 'en-US', setup: true);
+        }
 
         if (!file_exists(Webtrees::CONFIG_FILE)) {
             fwrite(STDERR, 'No config file found: ' . Webtrees::CONFIG_FILE . "\n");
