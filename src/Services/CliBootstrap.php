@@ -29,6 +29,7 @@ namespace Schwendinger\Webtrees\Services;
 use Fisharebest\Webtrees\DB;
 use Fisharebest\Webtrees\I18N;
 use Fisharebest\Webtrees\Webtrees;
+use Schwendinger\Webtrees\Helpers\Functions;
 use Throwable;
 
 use function file_exists;
