@@ -53,6 +53,7 @@ use Fig\Http\Message\StatusCodeInterface;
 use Exception;
 use PDOException;
 
+use function array_replace;
 
 /**
  * Functions to be used in webtrees custom modules
@@ -93,6 +94,31 @@ class Functions
     public static function wtIsAtLeast2_3(): bool
     {
         return self::webtreesAtLeast('2.3');
+    }
+
+    /**
+     * wt 2.3 compat: DatatablesService reads the DataTables params
+     * (draw/start/length/order/search) from the parsed request BODY, while
+     * wt 2.2.6 reads them from the QUERY STRING. A table that issues a GET
+     * (string data-ajax / ajax.type GET) therefore breaks on 2.3 (empty body
+     * -> draw=0, the client drops the response). On 2.3 only, mirror the union
+     * of query string + body into BOTH sources so handleQuery() /
+     * handleCollection() resolve the params regardless of transport. On 2.2.6
+     * the request is returned unchanged.
+     *
+     * @param ServerRequestInterface $request the incoming DataTables request
+     *
+     * @return ServerRequestInterface the request with both param sources aligned
+     */
+    public static function normalizeDataTablesRequest(ServerRequestInterface $request): ServerRequestInterface
+    {
+        if (!self::wtIsAtLeast2_3()) {
+            return $request;
+        }
+
+        $merged = array_replace($request->getQueryParams(), (array) $request->getParsedBody());
+
+        return $request->withQueryParams($merged)->withParsedBody($merged);
     }
 
     /**
