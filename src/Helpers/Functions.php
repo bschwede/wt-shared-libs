@@ -443,4 +443,23 @@ class Functions
             return $code;
         }
     }
+
+    /**
+     * check if Module access level allows user access
+     * wt 2.2: $module->accessLevel($tree, ModuleTabInterface::class) >= Auth::accessLevel($tree, $user)
+     * wt 2.3: $module->accessLevel($tree, ModuleTabInterface::class)->allows(Auth::accessLevel($tree, $user)
+     * @param int|AccessLevel $module_access_level
+     * @param int|AccessLevel $user_access_level
+     * @return boolean
+     */
+    public static function moduleAllowsUserAccess($module_access_level, $user_access_level): bool {
+        if (self::wtIsAtLeast2_3()) {
+            $module_access_level = is_int($module_access_level) ? AccessLevel::from($module_access_level) : $module_access_level;
+            $user_access_level = is_int($user_access_level) ? AccessLevel::from($user_access_level) : $user_access_level;
+            
+            return $module_access_level->allows($user_access_level);
+        } else {
+            return $module_access_level >= $user_access_level;
+        }
+    }    
 }
