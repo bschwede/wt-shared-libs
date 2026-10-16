@@ -276,7 +276,6 @@ class Functions
      * Version-neutral, canonical form of a route handler (for `route_help_map.handler_key`).
      *  - Core HTTP FQCN (2.2.6 RequestHandlers\ / 2.3 Controllers\):
      *      Remove namespace + suffix (Page|Action|Modal) + apply alias map;
-     *      ModuleAction remains 1:1 (version-stable, name unchanged).
      *  - Everything else (module FQCN, module/point names, custom FQCN): unchanged.
      *
      * @return string
