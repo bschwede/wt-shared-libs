@@ -290,10 +290,7 @@ class Functions
             $parts = explode('\\', $h);
             $base = (string) $parts[count($parts) - 1];
 
-            // ModuleAction is version-stable (remains in RequestHandlers) -> 1:1, no suffix stripping.
-            if ($base === 'ModuleAction') {
-                return $h;
-            }
+            // ModuleAction remains in RequestHandlers - in wt2.2.x handler was module or module-tree
 
             foreach (['Page', 'Action', 'Modal'] as $sfx) {
                 if (str_ends_with($base, $sfx) && strlen($base) > strlen($sfx)) {
